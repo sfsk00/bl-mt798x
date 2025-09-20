@@ -1,3 +1,8 @@
+/*
+ * U-Boot网络配置模块修复版
+ * 修复net_init命名冲突问题
+ * 版本：v3.3
+ */
 
 #include <common.h>
 #include <command.h>
@@ -6,8 +11,8 @@
 
 #define DHCP_RETRY 3
 
-/* 网络初始化 */
-static int net_init(void)
+/* 重命名为init_network避免冲突 */
+static int init_network(void)
 {
     if (!eth_get_dev()) {
         printf("Network not ready\n");
@@ -41,7 +46,7 @@ static int dhcp_config(void)
 static int do_netcmd(struct cmd_tbl *cmdtp, int flag,
                    int argc, char *const argv[])
 {
-    if (net_init() != CMD_RET_SUCCESS)
+    if (init_network() != CMD_RET_SUCCESS)
         return CMD_RET_FAILURE;
 
     if (argc > 1 && !strcmp(argv[1], "dhcp"))

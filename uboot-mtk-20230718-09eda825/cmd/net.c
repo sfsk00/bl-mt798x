@@ -39,16 +39,16 @@ static int do_bootp(struct cmd_tbl *cmdtp, int flag, int argc,
 );*/
 
 
-static int do_dhcp_custom(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
+int do_dhcp_custom(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
 {
-    printf("Custom DHCP client started\n");
+    printf("[DHCP-CUSTOM] Starting enhanced DHCP client\n");
     
-    /* 添加您的自定义DHCP逻辑 */
+    /* 调用标准DHCP实现 */
     if (do_dhcp(cmdtp, flag, argc, argv) != CMD_RET_SUCCESS) {
         struct in_addr ip;
         ip.s_addr = htonl(0xC0A80102); // 192.168.1.2
         net_set_ip(ip);
-        printf("Using fallback IP: 192.168.1.2\n");
+        printf("[DHCP-CUSTOM] Fallback to 192.168.1.2\n");
     }
     
     return CMD_RET_SUCCESS;
@@ -56,10 +56,13 @@ static int do_dhcp_custom(struct cmd_tbl *cmdtp, int flag, int argc, char *const
 
 U_BOOT_CMD(
     dhcp_custom, 1, 1, do_dhcp_custom,
-    "Custom DHCP client with fallback IP",
+    "Enhanced DHCP client with fallback IP",
     "[timeout]\n"
     "  - timeout: Optional timeout in milliseconds"
 );
+
+
+
 
 #endif
 

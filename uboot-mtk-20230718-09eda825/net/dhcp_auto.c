@@ -14,7 +14,7 @@ static int do_dhcp_autoconfig(struct cmd_tbl *cmdtp, int flag, int argc,
 {
     int ret;
     struct udevice *dev;
-    struct in_addr ip_addr;
+    char ip_str[16];
     
     /* 硬件初始化 */
     if (uclass_get_device(UCLASS_ETH, 0, &dev)) {
@@ -32,11 +32,9 @@ static int do_dhcp_autoconfig(struct cmd_tbl *cmdtp, int flag, int argc,
         ret = net_loop(DHCP);
         
         if (!ret) {
-            /* 获取并显示分配的IP */
-            if (!net_parse_ipv4(env_get("ipaddr"), &ip_addr)) {
-                printf("DHCP success: IP=%s\n", inet_ntoa(ip_addr));
-                return CMD_RET_SUCCESS;
-            }
+            /* 使用环境变量直接获取IP */
+            printf("DHCP success: IP=%s\n", env_get("ipaddr"));
+            return CMD_RET_SUCCESS;
         }
         mdelay(100);
     }

@@ -2,11 +2,34 @@
 # Network configuration
 #
 
+
 menuconfig NET
-	bool "Networking support"
-	default y
+    bool "Networking support"
+    help
+      This option enables networking support
 
 if NET
+
+config CMD_DHCP
+    bool "DHCP support"
+    depends on !CMD_DHCP_CUSTOM  # 避免循环依赖
+    help
+      Basic DHCP client implementation
+
+config CMD_DHCP_CUSTOM
+    bool "Custom DHCP features"
+    depends on NET
+    select CMD_DHCP 
+if !NET  # 条件选
+
+
+
+
+#menuconfig NET
+	#bool "Networking support"
+	#default y
+
+#if NET
 
 config ARP_TIMEOUT
 	int "Milliseconds before trying ARP again"

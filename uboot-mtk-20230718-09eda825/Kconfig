@@ -16,6 +16,12 @@ source "board/mediatek/Kconfig"
 
 menu "General setup"
 
+config CMD_DHCPD
+    bool "dhcpd"
+    depends on NET
+    help
+      Enable DHCP server functionality
+
 config BROKEN
 	bool
 	help

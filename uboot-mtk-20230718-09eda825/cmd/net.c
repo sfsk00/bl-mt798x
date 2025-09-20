@@ -38,15 +38,29 @@ static int do_bootp(struct cmd_tbl *cmdtp, int flag, int argc,
 	"[loadAddress] [[hostIPaddr:]bootfilename]"
 );*/
 
+
+static int do_dhcp_custom(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
+{
+    printf("Custom DHCP client started\n");
+    
+    /* 添加您的自定义DHCP逻辑 */
+    if (do_dhcp(cmdtp, flag, argc, argv) != CMD_RET_SUCCESS) {
+        struct in_addr ip;
+        ip.s_addr = htonl(0xC0A80102); // 192.168.1.2
+        net_set_ip(ip);
+        printf("Using fallback IP: 192.168.1.2\n");
+    }
+    
+    return CMD_RET_SUCCESS;
+}
+
 U_BOOT_CMD(
     dhcp_custom, 1, 1, do_dhcp_custom,
-    "Enhanced DHCP with fallback",
+    "Custom DHCP client with fallback IP",
     "[timeout]\n"
-    "  - timeout: Optional timeout in ms\n"
-    "  - Features:\n"
-    "    * Static IP fallback\n"
-    "    * Vendor class support"
+    "  - timeout: Optional timeout in milliseconds"
 );
+
 #endif
 
 #ifdef CONFIG_CMD_TFTPBOOT

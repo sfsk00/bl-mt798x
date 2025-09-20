@@ -1,14 +1,15 @@
-
 #include <common.h>
 #include <command.h>
 #include <net.h>
 #include <dm.h>
 #include <env.h>
+#include <linux/delay.h>
 
 #define DHCP_RETRY_MAX 3
 #define DHCP_TIMEOUT_MS 5000
 
-static int do_dhcp_autoconfig(cmd_tbl_t *cmdtp, int flag, int argc, char *const argv[])
+static int do_dhcp_autoconfig(struct cmd_tbl *cmdtp, int flag, int argc,
+                             char *const argv[])
 {
     int ret;
     struct udevice *dev;

@@ -20,6 +20,7 @@ config CMD_DHCP_AUTO
       - 5s timeout
       - Fallback to static IP
 
+
 config ARP_TIMEOUT
 	int "Milliseconds before trying ARP again"
 	default 5000

@@ -9,8 +9,5 @@
 #ifndef __MT7981_H
 #define __MT7981_H
 
-CONFIG_NET=y
-CONFIG_CMD_NET=y
-CONFIG_CMD_DHCP=y # 如需DHCP功能
-CONFIG_CMD_PING=y # 如需ping功能
+
 #endif

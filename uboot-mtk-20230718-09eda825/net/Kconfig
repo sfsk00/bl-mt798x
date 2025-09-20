@@ -10,11 +10,15 @@ menuconfig NET
 
 if NET
 
-config CMD_DHCP_FIXED
-    bool "Fixed IP fallback support"
+config CMD_DHCP_AUTO
+    bool "dhcp_auto command"
     depends on NET
+    default y
     help
-      Enable automatic fallback to 192.168.1.1 when DHCP fails
+      Enable automatic DHCP configuration with:
+      - 3 retry attempts
+      - 5s timeout
+      - Fallback to static IP
 
 config ARP_TIMEOUT
 	int "Milliseconds before trying ARP again"

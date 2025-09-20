@@ -16,6 +16,13 @@ source "board/mediatek/Kconfig"
 
 menu "General setup"
 
+config CMD_DHCP_CUSTOM
+    bool "Custom DHCP command"
+    depends on CMD_DHCP
+    select NET
+    help
+      Enhanced DHCP with fallback IP support
+
 config BROKEN
 	bool
 	help

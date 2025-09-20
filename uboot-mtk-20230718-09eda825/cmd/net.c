@@ -32,10 +32,20 @@ static int do_bootp(struct cmd_tbl *cmdtp, int flag, int argc,
 	return netboot_common(BOOTP, cmdtp, argc, argv);
 }
 
-U_BOOT_CMD(
+/*U_BOOT_CMD(
 	bootp,	3,	1,	do_bootp,
 	"boot image via network using BOOTP/TFTP protocol",
 	"[loadAddress] [[hostIPaddr:]bootfilename]"
+);*/
+
+U_BOOT_CMD(
+    dhcp_custom, 1, 1, do_dhcp_custom,
+    "Enhanced DHCP with fallback",
+    "[timeout]\n"
+    "  - timeout: Optional timeout in ms\n"
+    "  - Features:\n"
+    "    * Static IP fallback\n"
+    "    * Vendor class support"
 );
 #endif
 

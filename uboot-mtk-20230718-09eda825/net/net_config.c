@@ -1,13 +1,15 @@
 
 /*
- * U-Boot网络配置模块
- * 功能：提供静态IP设置和DHCP自动获取功能
+ * U-Boot网络配置模块修复完整版
+ * 修复所有编译警告并增强稳定性
  */
 
 #include <common.h>
 #include <command.h>
 #include <net.h>
 #include <env.h>
+#include <dm.h>
+#include <dm/device.h>
 #include <linux/delay.h>
 
 #define DHCP_RETRY_MAX 3
@@ -17,10 +19,25 @@
 static int check_network_status(void)
 {
     struct udevice *dev;
+    
+    /* 初始化设备模型 */
+    if (dm_init_and_scan(false)) {
+        printf("Error: DM initialization failed\n");
+        return CMD_RET_FAILURE;
+    }
+
+    /* 获取以太网设备 */
     if (uclass_get_device(UCLASS_ETH, 0, &dev)) {
         printf("Error: Ethernet device not found\n");
         return CMD_RET_FAILURE;
     }
+    
+    /* 检查PHY状态 */
+    if (!eth_get_dev()) {
+        printf("Error: PHY not ready\n");
+        return CMD_RET_FAILURE;
+    }
+    
     return CMD_RET_SUCCESS;
 }
 
@@ -29,28 +46,45 @@ static int set_static_ip(const char *ip, const char *mask,
                         const char *gateway, const char *server)
 {
     if (!ip || !mask || !gateway) {
-        printf("Invalid parameters\n");
+        printf("Usage: set_static_ip <ip> <mask> <gateway> [server]\n");
+        return CMD_RET_USAGE;
+    }
+
+    /* 参数有效性检查 */
+    if (!net_parse_ipv4(ip, NULL) || 
+        !net_parse_ipv4(mask, NULL) ||
+        !net_parse_ipv4(gateway, NULL)) {
+        printf("Error: Invalid IP format\n");
         return CMD_RET_FAILURE;
     }
 
+    /* 设置环境变量 */
     env_set("ipaddr", ip);
     env_set("netmask", mask);
     env_set("gatewayip", gateway);
     env_set("serverip", server ? server : "192.168.1.1");
     
-    printf("Static IP configured:\n"
+    /* 重启网络接口 */
+    net_stop();
+    if (net_start()) {
+        printf("Error: Network restart failed\n");
+        return CMD_RET_FAILURE;
+    }
+
+    printf("Network configured:\n"
            "IP: %s\nMask: %s\nGateway: %s\nServer: %s\n",
            ip, mask, gateway, env_get("serverip"));
     
-    return net_restart();
+    return CMD_RET_SUCCESS;
 }
 
-/* DHCP配置实现 */
+/* DHCP自动配置实现 */
 static int dhcp_autoconfig(void)
 {
     int ret;
     char *ipaddr;
     
+    /* 设置DHCP参数 */
     env_set_ulong("netretry", DHCP_RETRY_MAX);
     env_set_ulong("timeout", DHCP_TIMEOUT_MS);
 
@@ -68,7 +102,7 @@ static int dhcp_autoconfig(void)
     return CMD_RET_FAILURE;
 }
 
-/* 命令处理函数 */
+/* 统一命令入口 */
 static int do_net_config(struct cmd_tbl *cmdtp, int flag,
                         int argc, char *const argv[])
 {
@@ -83,10 +117,6 @@ static int do_net_config(struct cmd_tbl *cmdtp, int flag,
         return CMD_RET_FAILURE;
 
     if (strcmp(argv[1], "static") == 0) {
-        if (argc < 5) {
-            printf("Missing parameters for static IP\n");
-            return CMD_RET_USAGE;
-        }
         return set_static_ip(argv[2], argv[3], argv[4], 
                            (argc > 5) ? argv[5] : NULL);
     }
@@ -104,6 +134,7 @@ static int do_net_config(struct cmd_tbl *cmdtp, int flag,
     return CMD_RET_USAGE;
 }
 
+/* 命令注册 */
 U_BOOT_CMD(
     netconfig, 6, 1, do_net_config,
     "Network configuration tool",

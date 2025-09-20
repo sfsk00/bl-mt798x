@@ -22,7 +22,7 @@
 #include <net/udp.h>
 #include <net/sntp.h>
 #include <net/ncsi.h>
-
+#include <dhcp_custom.h> //2025年9月20日
 static int netboot_common(enum proto_t, struct cmd_tbl *, int, char * const []);
 
 #ifdef CONFIG_CMD_BOOTP

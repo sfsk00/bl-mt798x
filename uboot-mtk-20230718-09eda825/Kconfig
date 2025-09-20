@@ -16,12 +16,6 @@ source "board/mediatek/Kconfig"
 
 menu "General setup"
 
-config CMD_DHCP_FIXED
-    bool "Fixed IP fallback support"
-    depends on CMD_DHCP
-    help
-      Enable automatic fallback to 192.168.1.1 when DHCP fails
-
 config BROKEN
 	bool
 	help

@@ -11,4 +11,6 @@ struct dhcp_extension {
 int dhcp_custom_request(void);
 void dhcp_set_fallback_ip(uint32_t ip);
 
+int do_dhcp_custom(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[]);
+
 #endif

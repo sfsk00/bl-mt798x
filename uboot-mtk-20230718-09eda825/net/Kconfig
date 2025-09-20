@@ -11,15 +11,17 @@ menuconfig NET
 if NET
 
 
-config CMD_DHCP_AUTO
-    bool "dhcp_auto command"
-    depends on CMD_NET && NET
+config CMD_NET_CONFIG
+    bool "Advanced network configuration"
+    depends on CMD_NET
     default y
     help
-      Enhanced DHCP auto-configuration with:
-      - 3 retry attempts
-      - Configurable timeout
-      - IPv4 fallback support
+      Provides enhanced network configuration features:
+      - Static IP configuration
+      - DHCP auto-configuration
+      - Network status checking
+      - Fallback IP support
+
 
 
 

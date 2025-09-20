@@ -10,15 +10,17 @@ menuconfig NET
 
 if NET
 
+
 config CMD_DHCP_AUTO
     bool "dhcp_auto command"
-    depends on NET
+    depends on CMD_NET && NET
     default y
     help
-      Enable automatic DHCP configuration with:
+      Enhanced DHCP auto-configuration with:
       - 3 retry attempts
-      - 5s timeout
-      - Fallback to static IP
+      - Configurable timeout
+      - IPv4 fallback support
+
 
 
 config ARP_TIMEOUT

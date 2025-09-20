@@ -22,7 +22,7 @@
 #include <net/udp.h>
 #include <net/sntp.h>
 #include <net/ncsi.h>
-#include <dhcp_custom.h> //2025年9月20日
+
 static int netboot_common(enum proto_t, struct cmd_tbl *, int, char * const []);
 
 #ifdef CONFIG_CMD_BOOTP
@@ -32,35 +32,11 @@ static int do_bootp(struct cmd_tbl *cmdtp, int flag, int argc,
 	return netboot_common(BOOTP, cmdtp, argc, argv);
 }
 
-/*U_BOOT_CMD(
+U_BOOT_CMD(
 	bootp,	3,	1,	do_bootp,
 	"boot image via network using BOOTP/TFTP protocol",
 	"[loadAddress] [[hostIPaddr:]bootfilename]"
-);*/
-
-
-int do_dhcp_custom(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
-{
-    printf("[DHCP-CUSTOM] Starting enhanced DHCP client\n");
-    
-    /* 调用标准DHCP实现 */
-    if (do_dhcp(cmdtp, flag, argc, argv) != CMD_RET_SUCCESS) {
-        struct in_addr ip;
-        ip.s_addr = htonl(0xC0A80102); // 192.168.1.2
-        net_set_ip(ip);
-        printf("[DHCP-CUSTOM] Fallback to 192.168.1.2\n");
-    }
-    
-    return CMD_RET_SUCCESS;
-}
-
-U_BOOT_CMD(
-    dhcp_custom, 1, 1, do_dhcp_custom,
-    "Enhanced DHCP client with fallback IP",
-    "[timeout]\n"
-    "  - timeout: Optional timeout in milliseconds"
 );
-
 
 
 

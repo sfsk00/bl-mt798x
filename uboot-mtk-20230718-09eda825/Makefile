@@ -2507,16 +2507,15 @@ FORCE:
 
 
 # U-Boot主Makefile中BusyBox集成部分
-BUSYBOX_DIR := $(TOPDIR)/busybox
-BUSYBOX_CONFIG := $(BUSYBOX_DIR)/.config
+#BUSYBOX_DIR := $(TOPDIR)/busybox
+#BUSYBOX_CONFIG := $(BUSYBOX_DIR)/.config
 
-busybox_menuconfig:
-	$(MAKE) -C $(BUSYBOX_DIR) menuconfig  # 注意：必须使用Tab缩进
+#busybox_menuconfig:
+	#$(MAKE) -C $(BUSYBOX_DIR) menuconfig  # 注意：必须使用Tab缩进
 
-busybox: $(BUSYBOX_CONFIG)
-	$(MAKE) -C $(BUSYBOX_DIR) CROSS_COMPILE=$(CROSS_COMPILE)
-	@mkdir -p $(obj)rootfs/bin
-	cp $(BUSYBOX_DIR)/busybox $(obj)rootfs/bin/
-	@echo "BusyBox installed to $(obj)rootfs/bin/"
-
+#busybox: $(BUSYBOX_CONFIG)
+	#$(MAKE) -C $(BUSYBOX_DIR) CROSS_COMPILE=$(CROSS_COMPILE)
+	#@mkdir -p $(obj)rootfs/bin
+	#cp $(BUSYBOX_DIR)/busybox $(obj)rootfs/bin/
+	#@echo "BusyBox installed to $(obj)rootfs/bin/"
 

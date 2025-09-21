@@ -40,3 +40,26 @@ obj-$(CONFIG_MTK_HTTPD)  += mtk_httpd.o
 # sprintf(buf, index ? "foo%d" : "foo", index)
 # and this is intentional usage.
 CFLAGS_eth_common.o += -Wno-format-extra-args
+
+
+CROSS_COMPILE := arm-linux-gnueabihf-
+ARCH := arm
+BUSYBOX_VER := 1.36.1
+
+all: busybox rootfs
+
+busybox:
+    wget https://busybox.net/downloads/busybox-$(BUSYBOX_VER).tar.bz2
+    tar xf busybox-$(BUSYBOX_VER).tar.bz2
+    make -C busybox-$(BUSYBOX_VER) defconfig
+    make -C busybox-$(BUSYBOX_VER) menuconfig
+    make -C busybox-$(BUSYBOX_VER) CROSS_COMPILE=$(CROSS_COMPILE)
+    make -C busybox-$(BUSYBOX_VER) install
+
+rootfs:
+    mkdir -p rootfs/{bin,sbin,etc,proc,sys,dev}
+    cp -ra busybox-$(BUSYBOX_VER)/_install/* rootfs/
+    echo '::sysinit:/etc/init.d/rcS' > rootfs/etc/inittab
+    mkdir -p rootfs/etc/init.d
+    echo '#!/bin/sh' > rootfs/etc/init.d/rcS
+    chmod +x rootfs/etc/init.d/rcS

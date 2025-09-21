@@ -11,17 +11,6 @@ menuconfig NET
 if NET
 
 
-config CMD_NET_CONFIG
-    bool "Advanced network configuration"
-    depends on CMD_NET
-    default y
-    help
-      Provides enhanced network configuration features:
-      - Static IP configuration
-      - DHCP auto-configuration
-      - Network status checking
-      - Fallback IP support
-
 
 
 

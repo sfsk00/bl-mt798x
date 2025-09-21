@@ -2505,3 +2505,14 @@ FORCE:
 .PHONY: $(PHONY)
 
 
+# 在U-Boot主Makefile中添加
+BUSYBOX_DIR := $(TOPDIR)/busybox
+BUSYBOX_CONFIG := $(BUSYBOX_DIR)/.config
+
+busybox_menuconfig:
+    $(MAKE) -C $(BUSYBOX_DIR) menuconfig
+
+busybox: $(BUSYBOX_CONFIG)
+    $(MAKE) -C $(BUSYBOX_DIR)
+    cp $(BUSYBOX_DIR)/busybox $(obj)rootfs/bin/
+

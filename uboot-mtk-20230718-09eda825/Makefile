@@ -2505,21 +2505,3 @@ FORCE:
 .PHONY: $(PHONY)
 
 
-CROSS_COMPILE := arm-linux-gnueabihf-
-ARCH := arm
-
-all: busybox rootfs
-
-busybox:
-	./build_busybox.sh
-
-rootfs:
-	genext2fs -b 8192 -d rootfs rootfs.img
-    mkimage -A $(ARCH) -O linux -T ramdisk -C none \
-        -a 0 -e 0 -n "BusyBox RootFS" \
-        -d rootfs.img uRamdisk
-
-clean:
-    rm -rf busybox rootfs rootfs.img uRamdisk
-
-.PHONY: all clean

@@ -2505,25 +2505,21 @@ FORCE:
 .PHONY: $(PHONY)
 
 
-
 CROSS_COMPILE := arm-linux-gnueabihf-
 ARCH := arm
-BUSYBOX_VER := 1.36.1
 
 all: busybox rootfs
 
 busybox:
-    wget https://busybox.net/downloads/busybox-$(BUSYBOX_VER).tar.bz2
-    tar xf busybox-$(BUSYBOX_VER).tar.bz2
-    make -C busybox-$(BUSYBOX_VER) defconfig
-    make -C busybox-$(BUSYBOX_VER) menuconfig
-    make -C busybox-$(BUSYBOX_VER) CROSS_COMPILE=$(CROSS_COMPILE)
-    make -C busybox-$(BUSYBOX_VER) install
+    ./build_busybox.sh
 
 rootfs:
-    mkdir -p rootfs/{bin,sbin,etc,proc,sys,dev}
-    cp -ra busybox-$(BUSYBOX_VER)/_install/* rootfs/
-    echo '::sysinit:/etc/init.d/rcS' > rootfs/etc/inittab
-    mkdir -p rootfs/etc/init.d
-    echo '#!/bin/sh' > rootfs/etc/init.d/rcS
-    chmod +x rootfs/etc/init.d/rcS
+    genext2fs -b 8192 -d rootfs rootfs.img
+    mkimage -A $(ARCH) -O linux -T ramdisk -C none \
+        -a 0 -e 0 -n "BusyBox RootFS" \
+        -d rootfs.img uRamdisk
+
+clean:
+    rm -rf busybox rootfs rootfs.img uRamdisk
+
+.PHONY: all clean
